@@ -40,6 +40,6 @@ app.post('/bitbucket/push', (req, res) => {
   res.sendStatus(200);
 });
 
-app.listen(8080, () => {
-  console.log('docker webhook started.')
+app.listen(config.port, () => {
+  console.log('docker webhook started.', config.port);
 });
