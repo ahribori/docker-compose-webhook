@@ -1,6 +1,6 @@
 const express = require('express');
-const path = require('path');
-const workingDir = path.resolve('../../test/auto_push_test');
+const config = require('./config');
+const workingDir = config.workingDir;
 const app = express();
 const git = require('simple-git')(workingDir);
 const dockerCompose = require('docker-compose');
@@ -8,9 +8,24 @@ const dockerCompose = require('docker-compose');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-console.log(`Target directory -> ${workingDir}`);
+console.log(`Working directory -> ${workingDir}`);
 
-app.use('/github/push', (req, res) => {
+app.post('/github/push', (req, res) => {
+  git.pull((err, update) => {
+    if (err) {
+      return console.error(err);
+    }
+    if (update && update.summary.changes) {
+      dockerCompose.upAll({ cwd: workingDir, log: true })
+        .then(() => {
+          console.log('done')
+        }, console.error)
+    }
+  });
+  res.sendStatus(200);
+});
+
+app.post('/bitbucket/push', (req, res) => {
   git.pull((err, update) => {
     if (err) {
       return console.error(err);
