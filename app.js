@@ -16,7 +16,7 @@ app.post('/github/push', (req, res) => {
       return console.error(err);
     }
     if (update && update.summary.changes) {
-      dockerCompose.upAll({ cwd: workingDir, log: true })
+      dockerCompose.upAll({ cwd: workingDir, log: true,  commandOptions: ['--build']})
         .then(() => {
           console.log('done')
         }, console.error)
@@ -31,7 +31,7 @@ app.post('/bitbucket/push', (req, res) => {
       return console.error(err);
     }
     if (update && update.summary.changes) {
-      dockerCompose.upAll({ cwd: workingDir, log: true })
+      dockerCompose.upAll({ cwd: workingDir, log: true, commandOptions: ['--build'] })
         .then(() => {
           console.log('done')
         }, console.error)
