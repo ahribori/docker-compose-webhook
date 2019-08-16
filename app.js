@@ -4,6 +4,9 @@ const workingDir = config.workingDir;
 const app = express();
 const git = require('simple-git')(workingDir);
 const dockerCompose = require('docker-compose');
+const dockerCLI = require('docker-cli-js');
+const Docker = dockerCLI.Docker;
+const docker = new Docker();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,7 +19,7 @@ app.post('/github/push', (req, res) => {
       return console.error(err);
     }
     if (update && update.summary.changes) {
-      dockerCompose.upAll({ cwd: workingDir, log: true,  commandOptions: ['--build']})
+      dockerCompose.upAll({ cwd: workingDir, log: true, commandOptions: ['--build'] })
         .then(() => {
           console.log('done')
         }, console.error)
@@ -32,9 +35,11 @@ app.post('/bitbucket/push', (req, res) => {
     }
     if (update && update.summary.changes) {
       dockerCompose.upAll({ cwd: workingDir, log: true, commandOptions: ['--build'] })
+        .then(() => docker.command('image prune -f'))
         .then(() => {
-          console.log('done')
-        }, console.error)
+          console.log('Done')
+        })
+        .catch(console.error)
     }
   });
   res.sendStatus(200);

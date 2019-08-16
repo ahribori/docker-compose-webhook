@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^12.6.8",
+    "docker-cli-js": "^2.5.3",
     "docker-compose": "^0.20.1",
     "express": "^4.17.1",
     "nodemon": "^1.19.1",
