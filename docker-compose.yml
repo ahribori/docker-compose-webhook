@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  docker-webhook:
+    build: ./
+    image: docker-webhook
+    container_name: docker-webhook
+    restart: always
+    ports:
+      - 9900:9900
